@@ -12,7 +12,7 @@ const includeAccessToken = (user) => {
     return userObject;
 };
 
-class UserController {
+class UserResolver {
 
     constructor(model) {
         this.model = UserModels;
@@ -117,4 +117,4 @@ class UserController {
 }
 ;
 
-module.exports = new UserController();
+module.exports = new UserResolver();

@@ -5,6 +5,7 @@ const credential = require('../controller/actions/auth').credential()
 
 const MainController = require('../controller/MainController');
 const UserController = require('../controller/UserController');
+const CompanyController = require('../controller/CompanyController');
 
 class Router {
     index() {
@@ -13,7 +14,7 @@ class Router {
         router.get('/', MainController.service)
 
         /**
-        * Make route in the UserController in here!.
+        * Make UserController route in here!.
         */
 
         router.post('/register', 
@@ -36,6 +37,25 @@ class Router {
         router.post('/delete', credential,
             check('id').exists(), 
             UserController.delete
+        )
+
+        /**
+        * Make CompanyController route in here!.
+        */
+
+        router.post('/register-company', credential,
+            check('name').exists(), 
+            check('email').exists(), 
+            check('address').exists(), 
+            CompanyController.create
+        )
+        router.post('/update-company', credential,
+            check('id').exists(), 
+            CompanyController.update
+        )
+        router.post('/delete-company', credential,
+            check('id').exists(), 
+            CompanyController.delete
         )
 
         return router
