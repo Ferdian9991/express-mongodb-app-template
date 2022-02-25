@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const UserSchema = new mongoose.Schema({
-    _id: {type: String, default: uuid()},
+    _id: {type: String, required: true, default: () => uuid()},
     email: {type: String, default: ''},
     isEmailVerified: Boolean,
 

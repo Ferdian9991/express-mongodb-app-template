@@ -45,7 +45,7 @@ class UserController {
     const data = await userResolvers.auth(params)
     
     if (data) {
-        message = `Logged in as ${data.username}`;
+        message = `Logged in as ${data.fullname}`;
         options.responseMessage({res, statusCode: 200, auth: false, message, data})
     } else {
         message = `Invalid login credentials`;

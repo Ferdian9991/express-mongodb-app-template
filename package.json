@@ -2,10 +2,12 @@
   "name": "NodeMongoDbStarter",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "generate:user": "node utilities/generate-user.js"
   },
   "author": "ferdian <ferdisatria15@gmail.com>",
   "dependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.7",
     "aws-sdk": "^2.100.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.1",
@@ -31,6 +33,7 @@
     "multer-s3": "^2.7.0",
     "node-schedule": "^1.2.4",
     "nodemailer": "^2.3.2",
+    "readline-sync": "^1.4.10",
     "request": "^2.72.0",
     "sanitize-filename": "^1.6.1",
     "uuid": "^8.3.2",

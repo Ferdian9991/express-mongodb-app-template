@@ -40,7 +40,7 @@ class UserController {
 
     async findByUsername (options) {
         try {
-            const record = this.model.findOne({mobileNumber: options.username}).exec()
+            const record = this.model.findOne({username: options.username}).exec()
             
             return await record
         } catch (err) {
