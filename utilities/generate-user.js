@@ -27,6 +27,8 @@ const start = async() => {
             fullname: name,
             email: faker.internet.email(),
             phoneNumber: faker.phone.phoneNumber(),
+            gender: faker.random.arrayElement(["Male", "Female"]),
+            address: `${faker.address.streetAddress()}, ${faker.address.city()}, ${faker.address.country()}`,
             password: '1234',
         }
         await userResolvers.register(addUser)

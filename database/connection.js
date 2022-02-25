@@ -31,6 +31,19 @@ class Mongoose {
     });
     mongoose.set('debug', false);
   }
+
+  async collectionLists (mongoose) {
+    const connection = mongoose.connection;
+      
+    const mongoCollections = new Promise((resolve, reject) => {
+        connection.on('error', err => reject(err))
+        connection.once('open', () => resolve(
+          connection.db.listCollections().toArray())
+        );
+    })
+
+    return mongoCollections
+  }
 }
 
 module.exports = new Mongoose

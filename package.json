@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "start": "nodemon app.js",
-    "generate:user": "node utilities/generate-user.js"
+    "generate:user": "node utilities/generate-user.js",
+    "mongo:backup": "node database/utilities/mongodb-backup.js",
+    "mongo:restore": "node database/utilities/mongodb-restore.js"
   },
   "author": "ferdian <ferdisatria15@gmail.com>",
   "dependencies": {
@@ -15,6 +17,7 @@
     "connect-timeout": "^1.9.0",
     "cors": "^2.8.5",
     "crypto": "0.0.3",
+    "dayjs": "^1.10.7",
     "dotenv": "^16.0.0",
     "express": "^4.16.2",
     "express-graphql": "^0.6.11",
@@ -33,12 +36,15 @@
     "multer-s3": "^2.7.0",
     "node-schedule": "^1.2.4",
     "nodemailer": "^2.3.2",
+    "path": "^0.12.7",
     "readline-sync": "^1.4.10",
     "request": "^2.72.0",
     "sanitize-filename": "^1.6.1",
+    "shelljs": "^0.8.5",
     "uuid": "^8.3.2",
     "validator": "^9.0.0",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "yesno": "^0.3.1"
   },
   "devDependencies": {}
 }

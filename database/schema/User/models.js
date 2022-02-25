@@ -12,15 +12,20 @@ const UserSchema = new mongoose.Schema({
     passwordResetToken: String,
     passwordResetExpires: Date,
 
-    phoneNumber: {type: String, default: ''},
     phoneVerificationOTP: String,
     phoneVerificationExpires: Date,
     isMobileVerified: Boolean,
 
     username: {type: String, unique: true},
     fullname: {type: String, default: ''},
+    phoneNumber: {type: String, default: ''},
+    address: {type: String, default: ''},
     gender: {type: String, default: ''},
     picture: {type: String, default: ''},
+
+    _createdAt: {type: String, default: ''},
+    _updatedAt: {type: String, default: ''},
+    _deletedAt: {type: String, default: ''},
 
     status: {type: String, default: "active"},
 
