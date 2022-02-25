@@ -2,7 +2,7 @@
   "name": "NodeMongoDbStarter",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "generate:user": "node utilities/generate-user.js"
   },
   "author": "ferdian <ferdisatria15@gmail.com>",
