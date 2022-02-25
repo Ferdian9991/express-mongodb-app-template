@@ -16,16 +16,16 @@ const UserSchema = new mongoose.Schema({
     phoneVerificationExpires: Date,
     isMobileVerified: Boolean,
 
-    username: {type: String, unique: true},
-    fullname: {type: String, default: ''},
-    phoneNumber: {type: String, default: ''},
-    address: {type: String, default: ''},
-    gender: {type: String, default: ''},
-    picture: {type: String, default: ''},
-
     _createdAt: {type: String, default: ''},
     _updatedAt: {type: String, default: ''},
     _deletedAt: {type: String, default: ''},
+
+    address: {type: String, default: ''},
+    username: {type: String, unique: true},
+    fullname: {type: String, default: ''},
+    phoneNumber: {type: String, default: ''},
+    gender: {type: String, default: ''},
+    picture: {type: String, default: ''},
 
     status: {type: String, default: "active"},
 
