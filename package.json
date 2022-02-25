@@ -10,6 +10,7 @@
   "author": "ferdian <ferdisatria15@gmail.com>",
   "dependencies": {
     "@faker-js/faker": "^6.0.0-alpha.7",
+    "@nodelib/fs.scandir": "^2.1.5",
     "aws-sdk": "^2.100.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.1",
@@ -19,6 +20,7 @@
     "crypto": "0.0.3",
     "dayjs": "^1.10.7",
     "dotenv": "^16.0.0",
+    "eval": "^0.1.6",
     "express": "^4.16.2",
     "express-graphql": "^0.6.11",
     "express-jwt": "^5.3.0",

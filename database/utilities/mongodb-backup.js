@@ -6,6 +6,16 @@ const dayjs = require('dayjs');
 const mongoose = require('mongoose');
 const getCollection = require('../connection').collectionLists;
 require('../connection').connect();
+require('../schema/init').init();
+
+const sortArray = (value) => {
+    const sort = value.sort(function(a, b){
+        if(a < b) { return -1; }
+        if(a > b) { return 1; }
+        return 0;
+    })
+    return sort
+}
 
 const start = async () => {
 
@@ -13,7 +23,8 @@ const start = async () => {
     const filename = `DB-${ dayjs().format("YYYY-MM-DD") }.tar.zst`
 
     try {
-        const collections = await getCollection(mongoose)
+        const collectionLists = await getCollection(mongoose);
+        const collections = sortArray(collectionLists)
         const connection = mongoose.connection
 
         const backupPath = join(__dirname, '../../database', 'backup')
@@ -33,14 +44,16 @@ const start = async () => {
             recursive: true
         })
 
-        for (const collection of collections) {
+        const model = sortArray(mongoose.modelNames());
+        
+        for (let i = 0; i < collections.length; i++) {
             const data = await connection
-                .collection(collection.name)
+                .collection(collections[i].name)
                 .find({})
                 .toArray();
             if (data.length > 0) {
                 writeFileSync(
-                    `${dbPath}/${collection.name}.json`,
+                    `${dbPath}/${model[i]}.json`,
                     JSON.stringify(data)
                 )
             }

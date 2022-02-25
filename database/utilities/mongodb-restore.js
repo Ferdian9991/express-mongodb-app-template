@@ -7,6 +7,16 @@ const yesno = require('yesno');
 const readlineSync = require('readline-sync')
 const mongoose = require('mongoose');
 require('../connection').connect();
+require('../schema/init').init();
+
+const sortArray = (value) => {
+    const sort = value.sort(function(a, b){
+        if(a < b) { return -1; }
+        if(a > b) { return 1; }
+        return 0;
+    })
+    return sort
+}
 
 const start = async () => {
     try {
@@ -62,40 +72,21 @@ const start = async () => {
         const targetDirname = join(__dirname, '../backup', dirname)
 
         shell.exec(`tar --use-compress-program=unzstd -xvf ${targetFilename} -C ${join(__dirname, '../backup')}`);
-        const fileNames = readdirSync(targetDirname)
-            .filter((name) => name.endsWith(".json"));
+        const fileNames = sortArray( readdirSync(targetDirname).filter((name) => name.endsWith(".json")) );
 
-        const getSchema = readdirSync(join(__dirname, '../schema'))
+        const models = sortArray(mongoose.modelNames())
             .filter((name) => {
                 for (const key of fileNames) {
                     return key.includes(name)
                 }
             })
-            
-        const Schema = [];
-        const restoreData = [];
 
-        for (const key in fileNames) {
-            const jsonData = readFileSync(resolve(targetDirname, fileNames[key]));
+        for (const model of models) {
+            const jsonData = readFileSync(resolve(targetDirname, model + ".json"));
             const data = JSON.parse(jsonData);
-            const collectionName = fileNames[key].replace(".json", "");
-
-            const model = getSchema[key]
-            const code = `
-                (() => {
-                    const ${model} = require('../schema/${model}/resolvers');
-                    Schema.push(${model})
-                })()
-            `;
-
-            eval(code)
             
             for (const document of data) {
                 let { _id, ...body } = document;
-
-                const schema = Schema[key]
-
-                
             
                 let query = {_id};
                 let update = { 
@@ -108,10 +99,8 @@ const start = async () => {
 
                 const restore = await mongoose.model(model).findOneAndUpdate(query, update, options)
                             .catch(error => console.error(error));
-                            
-                restoreData.push(restore);
             }
-            console.log(`Successfully restoring: ${restoreData.length} items on collection ${collectionName}`)
+            console.log(`Successfully restoring: ${data.length} data on collection ${model}`)
         }
         console.log(`\nThe database is up to date`);
         shell.exec(`rm -rf ${targetDirname}`);
