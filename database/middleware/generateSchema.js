@@ -25,7 +25,7 @@ const start = async () => {
     }
 
     const continueRestore = await yesno({
-        question: `\nDo you want to add a field to the model ${schemaName}? (y/n)`,
+        question: `Do you want to add some field to the model ${schemaName}? (y/n)`,
     });
 
     let writeCode = [];
