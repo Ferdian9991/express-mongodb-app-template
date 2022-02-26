@@ -1,20 +1,15 @@
-const bcrypt = require('bcrypt-nodejs');
-const { v4: uuid } = require('uuid');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const Builder = require('../../middleware/schema')
 
-const companySchema = new mongoose.Schema({
-    _id: {type: String, required: true, default: () => uuid()},
-
-    _createdAt: {type: String, default: ''},
-    _updatedAt: {type: String, default: ''},
-    _deletedAt: {type: String, default: ''},
-
+const companySchema = Builder.schema({
     userId: {type: String, default: ''},
     name: {type: String, default: ''},
     profile: {type: String, default: ''},
     email: {type: String, default: ''},
     address: {type: String, default: ''},
+
+    _createdAt: {type: String, default: ''},
+    _updatedAt: {type: String, default: ''},
+    _deletedAt: {type: String, default: ''},
 
 }, {
     toObject: {virtuals: true},
@@ -23,9 +18,8 @@ const companySchema = new mongoose.Schema({
     collection: 'Companies'
 });
 
-companySchema.plugin(mongoosePaginate);
+Builder.paginate(companySchema);
 
-const User = mongoose.model('Company', companySchema);
+const Company = Builder.model('Company', companySchema);
 
-
-module.exports = User;
+module.exports = Company;

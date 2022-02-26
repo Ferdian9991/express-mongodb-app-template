@@ -1,10 +1,6 @@
-const bcrypt = require('bcrypt-nodejs');
-const { v4: uuid } = require('uuid');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const Builder = require('../../middleware/schema')
 
-const UserSchema = new mongoose.Schema({
-    _id: {type: String, required: true, default: () => uuid()},
+const UserSchema = Builder.schema({
     email: {type: String, default: ''},
     isEmailVerified: Boolean,
 
@@ -45,11 +41,11 @@ UserSchema.pre('save', function (next) {
     if (!user.isModified('password')) {
         return next();
     }
-    bcrypt.genSalt(10, function (err, salt) {
+    Builder.bcrypt().genSalt(10, function (err, salt) {
         if (err) {
             return next(err);
         }
-        bcrypt.hash(user.password, salt, null, function (err, hash) {
+        Builder.bcrypt().hash(user.password, salt, null, function (err, hash) {
             if (err) {
                 return next(err);
             }
@@ -59,9 +55,8 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-UserSchema.plugin(mongoosePaginate);
+Builder.paginate(UserSchema)
 
-const User = mongoose.model('User', UserSchema);
-
+const User = Builder.model('User', UserSchema);
 
 module.exports = User;
