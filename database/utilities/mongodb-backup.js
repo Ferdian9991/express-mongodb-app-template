@@ -23,10 +23,6 @@ const start = async () => {
     const filename = `DB-${ dayjs().format("YYYY-MM-DD") }.tar.zst`
 
     try {
-        const collectionLists = await getCollection(mongoose);
-        const collections = sortArray(collectionLists)
-        const connection = mongoose.connection
-
         const backupPath = join(__dirname, '../../database', 'backup')
         if (!existsSync(backupPath)) {
             mkdirSync(backupPath, {
@@ -44,16 +40,14 @@ const start = async () => {
             recursive: true
         })
 
-        const model = sortArray(mongoose.modelNames());
+        const models = sortArray(mongoose.modelNames());
         
-        for (let i = 0; i < collections.length; i++) {
-            const data = await connection
-                .collection(collections[i].name)
-                .find({})
-                .toArray();
+        for (const model of models) {
+            const getModel = mongoose.model(model)
+            const data = await getModel.find({})
             if (data.length > 0) {
                 writeFileSync(
-                    `${dbPath}/${model[i]}.json`,
+                    `${dbPath}/${model}.json`,
                     JSON.stringify(data)
                 )
             }
