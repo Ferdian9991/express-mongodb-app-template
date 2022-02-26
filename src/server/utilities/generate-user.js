@@ -1,4 +1,6 @@
-require('dotenv').config();
+require("dotenv").config({
+    path: "../../.env",
+});
 const { faker } = require('@faker-js/faker');
 const readlineSync = require('readline-sync')
 const mongoose = require('../database/connection');

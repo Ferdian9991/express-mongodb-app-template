@@ -1,4 +1,6 @@
-require('dotenv').config()
+require("dotenv").config({
+  path: "../../.env",
+});
 const mongoose = require('mongoose');
 
 let options = {};

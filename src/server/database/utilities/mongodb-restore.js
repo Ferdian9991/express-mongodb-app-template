@@ -1,4 +1,6 @@
-require('dotenv').config();
+require("dotenv").config({
+    path: "../../.env",
+});
 const { readdirSync, readFileSync, existsSync } = require('fs');
 const shell = require('shelljs')
 const { join, resolve, parse } = require('path');

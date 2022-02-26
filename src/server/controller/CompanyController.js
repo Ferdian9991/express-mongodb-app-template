@@ -1,7 +1,7 @@
 const { validationResult }  = require('express-validator');
 const options  = require('../config/options');
 const companyResolvers = require('../database/schema/Company/resolvers')
-const auth = require('../controller/actions/auth')
+const auth = require('./actions/auth')
 
 class CompanyController {
   async create(req, res) {

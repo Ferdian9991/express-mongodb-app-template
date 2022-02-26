@@ -2,7 +2,9 @@
  * Application Entry point
  * @type {createApplication}
  */
- require("dotenv").config(); 
+require("dotenv").config({
+  path: "../../.env",
+}); 
  const express = require('express');
  const bodyParser = require('body-parser');
  const logger = require('morgan');
@@ -34,8 +36,8 @@
  /**
   * Start express.
   */
- app.listen(app.get('port'), function () {
-   console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
+ app.listen(process.env.API_PORT || 3000, function () {
+   console.log('Express server listening on port %d in %s mode', process.env.API_PORT || 3000, app.get('env'));
  });
  
  module.exports = app;
