@@ -74,17 +74,12 @@ const start = async () => {
         shell.exec(`tar --use-compress-program=unzstd -xvf ${targetFilename} -C ${join(__dirname, '../backup')}`);
         const fileNames = sortArray( readdirSync(targetDirname).filter((name) => name.endsWith(".json")) );
 
-        const models = sortArray(mongoose.modelNames())
-            .filter((name) => {
-                for (const key of fileNames) {
-                    return key.includes(name)
-                }
-            })
+        const models = fileNames.filter(item => mongoose.modelNames().includes(item.replace('.json', '')));
 
         for (const model of models) {
-            const jsonData = readFileSync(resolve(targetDirname, model + ".json"));
+            const jsonData = readFileSync(resolve(targetDirname, model));
             const data = JSON.parse(jsonData);
-            
+            const modelName = model.replace('.json', '')
             for (const document of data) {
                 let { _id, ...body } = document;
             
@@ -97,10 +92,10 @@ const start = async () => {
                 
                 let options = { new: true, upsert: true, rawData: true };
 
-                const restore = await mongoose.model(model).findOneAndUpdate(query, update, options)
+                const restore = await mongoose.model(modelName).findOneAndUpdate(query, update, options)
                             .catch(error => console.error(error));
             }
-            console.log(`Successfully restoring: ${data.length} data on collection ${model}`)
+            console.log(`Successfully restoring: ${data.length} data on collection ${modelName}`)
         }
         console.log(`\nThe database is up to date`);
         shell.exec(`rm -rf ${targetDirname}`);
