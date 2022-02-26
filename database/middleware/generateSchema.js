@@ -4,6 +4,8 @@ const yesno = require('yesno')
 const readlineSync = require('readline-sync')
 const lineReplace = require('line-replace')
 const _ = require('lodash')
+const columns = require('cli-columns');
+const mongoose = require('mongoose');
 
 const schemaFile = [
     'models.js',
@@ -30,9 +32,16 @@ const start = async () => {
 
     let writeCode = [];
     const fieldLists = [];
+    const typeLists = [];
 
     if (continueRestore) {
         let totalField = readlineSync.question("\nHow many field do you want? (ex: 1) ");
+        const parentheses = /\(([^)]+)\)/;
+        const listTypes = Object.keys(mongoose.Schema.Types);
+        
+        console.log('Select schema type lists: ex: foo(String) or foo for default type string\n')
+        console.log(columns(listTypes)+'\n')
+
         const numberValidator = /^\d+$/.test(totalField)
 
         if (!numberValidator) {
@@ -41,12 +50,19 @@ const start = async () => {
         }
 
         for (let i = 1; i <= totalField; i++) {
-            let fieldName = readlineSync.question(`${i}). Enter field name! (ex: foo) `);
-            fieldLists.push(fieldName)
+            let fieldName = readlineSync.question(`${i}). Enter field name! (ex: foo(String) ) `);
+            let parenthesesVal = parentheses.exec(fieldName)
+            const type = parenthesesVal !== null ? parenthesesVal[1] : 'String';
+            if (!listTypes.includes(type)) {
+                console.log("Wrong input format!!");
+                process.exit();
+            }
+            typeLists.push(type)
+            fieldLists.push(fieldName.replace(`(${type})`,''))
         }
         
-        for (const field of fieldLists) {
-            const makeField = `    ${field}: {type: String, default: ''},\n`;
+        for (const key in fieldLists) {
+            const makeField = `    ${fieldLists[key]}: {type: ${typeLists[key]}, default: ''},\n`;
             writeCode.push(makeField)
         }
     }
