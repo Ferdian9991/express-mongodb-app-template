@@ -5,7 +5,7 @@
     "execMap": {
       "js": "node --harmony"
     },
-    "watch": ["controller/", "config/", "database/", "routes/", "app.js"],
+    "watch": ["controller/", "config/", "database/", "routes/", "server/app.js"],
     "env": {
       "NODE_ENV": "development"
     },

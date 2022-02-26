@@ -2,8 +2,8 @@
   "name": "NodeMongoDbStarter",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js",
-    "watch": "nodemon --watch server app.js",
+    "start": "node server/app.js",
+    "watch": "nodemon --watch server server/app.js",
     "generate:user": "node server/utilities/generate-user.js",
     "mongo:backup": "node server/database/utilities/mongodb-backup.js",
     "mongo:restore": "node server/database/utilities/mongodb-restore.js",
