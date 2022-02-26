@@ -2,6 +2,7 @@
   "name": "NodejsMongoDB",
   "version": "0.0.1",
   "main": "app.js",
+  "license": "MIT",
   "scripts": {
     "server": "cross-env NODE_ENV=production node app.js",
     "server:dev": "nodemon app.js --watch ./",

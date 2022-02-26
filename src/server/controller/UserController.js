@@ -49,7 +49,7 @@ class UserController {
         options.responseMessage({res, statusCode: 200, auth: false, message, data})
     } else {
         message = `Invalid login credentials`;
-        options.responseMessage({res, statusCode: 200, auth: false, message})
+        options.responseMessage({res, statusCode: 400, auth: false, message})
     }
   }
 

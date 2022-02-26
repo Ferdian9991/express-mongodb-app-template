@@ -10,6 +10,9 @@
     },
     "scripts": {
       "server:dev": "lerna run --stream server:dev",
-      "server": "lerna run --stream server"
+      "server": "lerna run --stream server",
+      "mongo:backup": "node src/server/database/utilities/mongodb-backup.js",
+      "mongo:restore": "node src/server/database/utilities/mongodb-restore.js",
+      "make:schema": "node src/server/database/middleware/generateSchema.js"
     }
   }
