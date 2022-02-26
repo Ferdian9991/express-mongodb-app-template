@@ -1,5 +1,7 @@
 const { existsSync, mkdirSync, writeFileSync } = require('fs')
 const { join } = require('path');
+const yesno = require('yesno')
+const readlineSync = require('readline-sync')
 const lineReplace = require('line-replace')
 const _ = require('lodash')
 
@@ -8,7 +10,7 @@ const schemaFile = [
     'resolvers.js'
 ]
 
-const start = () => {
+const start = async () => {
     if (!process.argv[2]) {
         console.log(`Please specify name to make schema. Example: yarn make:schema User`);
         process.exit(1);
@@ -20,6 +22,33 @@ const start = () => {
     if (existsSync(schemaPath)) {
         console.log(`Schema ${schemaName} already exists!`);
         process.exit(1);
+    }
+
+    const continueRestore = await yesno({
+        question: `\nDo you want to add a field to the model ${schemaName}? (y/n)`,
+    });
+
+    let writeCode = [];
+    const fieldLists = [];
+
+    if (continueRestore) {
+        let totalField = readlineSync.question("\nHow many field do you want? (ex: 1) ");
+        const numberValidator = /^\d+$/.test(totalField)
+
+        if (!numberValidator) {
+            console.log("Wrong input format!!");
+            process.exit();
+        }
+
+        for (let i = 1; i <= totalField; i++) {
+            let fieldName = readlineSync.question(`${i}). Enter field name! (ex: foo) `);
+            fieldLists.push(fieldName)
+        }
+        
+        for (const field of fieldLists) {
+            const makeField = `    ${field}: {type: String, default: ''},\n`;
+            writeCode.push(makeField)
+        }
     }
     
     mkdirSync(schemaPath, {
@@ -44,6 +73,7 @@ const start = () => {
             + `* Ex: email: {types: String, default: '', required: false}\n`
             + `*/` 
             + `\n\n`
+            + writeCode.join('')
             + `    _createdAt: {types: String, default: ''},\n`
             + `    _updateAt: {types: String, default: ''},\n`
             + `    _deletedAt: {types: String, default: ''},\n`
@@ -61,7 +91,7 @@ const start = () => {
             if (error) {
                 process.exit(1)
             } else {
-                console.log(`Successfully make ${schemaName} models!`)
+                console.log(`Successfully make ${schemaName} models${fieldLists[0] !== undefined ? ` with field ${fieldLists.join(', ')}` : ''}!`)
             }
         }
     })
