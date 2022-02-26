@@ -1,5 +1,5 @@
 {
-    "name": "NodejsMongoDB",
+    "name": "NodejsDashboard",
     "version": "0.0.1",
     "scripts": {
       "dashboard:dev": "next dev",
