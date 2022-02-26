@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
-const UserModels = require('../../schema/User/models');
+const UserModels = require('./models');
 const option = require('../../../config/options');
 
 const includeAccessToken = (user) => {

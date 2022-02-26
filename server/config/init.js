@@ -1,4 +1,4 @@
-const options = require('../config/options');
+const options = require('./options');
 
 class Init {
     index() {

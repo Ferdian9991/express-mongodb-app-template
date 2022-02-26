@@ -1,7 +1,7 @@
 const { validationResult }  = require('express-validator');
 const options  = require('../config/options');
 const userResolvers = require('../database/schema/User/resolvers')
-const auth = require('../controller/actions/auth')
+const auth = require('./actions/auth')
 
 class UserController {
   async register(req, res) {

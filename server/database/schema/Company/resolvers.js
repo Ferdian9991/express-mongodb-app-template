@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt-nodejs');
-const CompanyModels = require('../../schema/Company/models');
+const CompanyModels = require('./models');
 const option = require('../../../config/options');
 
 class CompanyResolver {

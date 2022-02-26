@@ -2,11 +2,12 @@
   "name": "NodeMongoDbStarter",
   "version": "0.0.1",
   "scripts": {
-    "start": "nodemon app.js",
-    "generate:user": "node utilities/generate-user.js",
-    "mongo:backup": "node database/utilities/mongodb-backup.js",
-    "mongo:restore": "node database/utilities/mongodb-restore.js",
-    "make:schema": "node database/middleware/generateSchema.js"
+    "start": "node app.js",
+    "watch": "nodemon --watch server app.js",
+    "generate:user": "node server/utilities/generate-user.js",
+    "mongo:backup": "node server/database/utilities/mongodb-backup.js",
+    "mongo:restore": "node server/database/utilities/mongodb-restore.js",
+    "make:schema": "node server/database/middleware/generateSchema.js"
   },
   "author": "ferdian <ferdisatria15@gmail.com>",
   "dependencies": {

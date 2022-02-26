@@ -7,8 +7,8 @@
  const bodyParser = require('body-parser');
  const logger = require('morgan');
  const cors = require("cors");
- const routes = require('./router');
- const mongoose = require('./database/connection');
+ const routes = require('./server/router');
+ const mongoose = require('./server/database/connection');
  
  const app = express();
  

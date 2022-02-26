@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { readdirSync, readFileSync } = require('fs');
+const { readdirSync, readFileSync, existsSync } = require('fs');
 const shell = require('shelljs')
 const { join, resolve, parse } = require('path');
 const dayjs = require('dayjs');
@@ -20,6 +20,10 @@ const sortArray = (value) => {
 
 const start = async () => {
     try {
+        if (!existsSync(join(__dirname, '../backup/'))) {
+            console.log("Database backup not available!")
+            process.exit();
+        }
         const getBackupFile = readdirSync(join(__dirname, '../backup/'))
             .filter((name) => name.endsWith(".tar.zst"))
 
