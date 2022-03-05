@@ -26,7 +26,14 @@ const start = async () => {
         process.exit(1);
     }
 
-    const continueRestore = await yesno({
+    let collectionName = readlineSync.question(`Please enter collection name in ${schemaName}Model (ex: Users) `);
+
+    if (!collectionName) {
+        console.log(`Wrong input format please enter again`);
+        process.exit(1);
+    }
+
+    const continueGenerate = await yesno({
         question: `Do you want to add some field to the model ${schemaName}? (y/n)`,
     });
 
@@ -34,13 +41,13 @@ const start = async () => {
     const fieldLists = [];
     const typeLists = [];
 
-    if (continueRestore) {
+    if (continueGenerate) {
         let totalField = readlineSync.question("\nHow many field do you want? (ex: 1) ");
         const parentheses = /\(([^)]+)\)/;
         const listTypes = Object.keys(mongoose.Schema.Types);
-        
+
         console.log('Select schema type lists: ex: foo(String) or foo for default type string\n')
-        console.log(columns(listTypes)+'\n')
+        console.log(columns(listTypes) + '\n')
 
         const numberValidator = /^\d+$/.test(totalField)
 
@@ -58,17 +65,17 @@ const start = async () => {
                 process.exit();
             }
             typeLists.push(type)
-            fieldLists.push(fieldName.replace(`(${type})`,''))
+            fieldLists.push(fieldName.replace(`(${type})`, ''))
         }
-        
+
         for (const key in fieldLists) {
             const makeField = `    ${fieldLists[key]}: {type: ${typeLists[key]}, default: ''},\n`;
             writeCode.push(makeField)
         }
     }
-    
+
     mkdirSync(schemaPath, {
-        recursive:true
+        recursive: true
     })
 
     for (const file of schemaFile) {
@@ -76,32 +83,12 @@ const start = async () => {
             join(schemaPath, file),
             `const ${schemaName};`,
         )
-    }    
-    
+    }
+
     lineReplace({
         file: join(schemaPath, schemaFile[0]),
         line: 1,
-        text: `const Builder = require('../../middleware/schema')`
-            + `\n\n`
-            + `const ${_.camelCase(schemaName)}Schema = Builder.schema({\n\n`
-            + `/**\n`
-            + `* Put the ${schemaName} model field what do you need here!\n`
-            + `* Ex: email: {types: String, default: '', required: false}\n`
-            + `*/` 
-            + `\n\n`
-            + writeCode.join('')
-            + `    _createdAt: {types: String, default: ''},\n`
-            + `    _updateAt: {types: String, default: ''},\n`
-            + `    _deletedAt: {types: String, default: ''},\n`
-            + `\n}, {\n`
-            + `    toObject: {virtuals: true},\n`
-            + `    toJSON: {virtuals: true},\n`
-            + `    usePushEach: true,\n`
-            + `    collection: '${schemaName}'\n`
-            + `})\n\n`
-            + `Builder.paginate(${_.camelCase(schemaName)}Schema);\n\n`
-            + `const ${schemaName} = Builder.model('${schemaName}', ${_.camelCase(schemaName)}Schema);\n\n`
-            + `module.exports = ${schemaName};`,
+        text: modelTemplate(schemaName, writeCode, collectionName),
         addNewLine: true,
         callback: ({ file, line, text, replacedText, error }) => {
             if (error) {
@@ -111,22 +98,11 @@ const start = async () => {
             }
         }
     })
-    
+
     lineReplace({
         file: join(schemaPath, schemaFile[1]),
         line: 1,
-        text: `const ${schemaName}Models = require('../../schema/${schemaName}/models');`
-            + `\n\n`
-            + `class ${schemaName}Resolver {\n\n`
-            + `/**\n`
-            + `* Put your actions here to execute ${schemaName}Model\n`
-            + `* Ex: async register () {} \n`
-            + `*/\n\n` 
-            + `    constructor(model) {\n`
-            + `        this.model = ${schemaName}Models;\n`
-            + `    }\n\n`
-            + `};\n\n`
-            + `module.exports = new ${schemaName}Resolver();`,
+        text: resolverTemplate(schemaName),
         addNewLine: true,
         callback: ({ file, line, text, replacedText, error }) => {
             if (error) {
@@ -136,6 +112,75 @@ const start = async () => {
             }
         }
     })
+}
+const modelTemplate = (schemaName, options, collectionName) => {
+    const template = `
+const Builder = require('../../middleware/schema')
+
+const ${_.camelCase(schemaName)}Schema = Builder.schema({
+
+/**
+* Put the Foo model field what do you need here!
+* Ex: email: {types: String, default: '', required: false}
+*/
+${options.join('')}
+    _createdAt: {type: String, default: ''},
+    _updatedAt: {type: String, default: ''},
+    _deletedAt: {type: String, default: ''},
+
+}, {
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true},
+    usePushEach: true, 
+    collection: '${collectionName}'
+});
+
+Builder.paginate(${_.camelCase(schemaName)}Schema);
+
+const ${schemaName} = Builder.model('${schemaName}', ${_.camelCase(schemaName)}Schema);
+
+module.exports = ${schemaName};
+`;
+    return template;
+}
+
+const resolverTemplate = (schemaName) => {
+    const template = `
+const ${schemaName}Models = require('../../schema/${schemaName}/models');
+
+class ${schemaName}Resolver {
+
+/**
+* Put your actions here to execute ${schemaName}Model
+* Ex: async register () {} 
+*/
+
+    constructor(model) {
+        this.model = ${schemaName}Models;
+    }
+
+    async create (data) {
+        try {   
+            const record = new this.model(data);
+            const newData = await record.save()
+
+            newData._createdAt = new Date().toISOString();
+            newData._updatedAt = new Date().toISOString();
+
+            const addNew = await newData.save();
+            
+            return await addNew;
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
+
+};
+
+module.exports = new ${schemaName}Resolver();    
+`;
+    return template;
 }
 
 start()
